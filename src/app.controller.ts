@@ -1,20 +1,42 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import { IndividualKHQRRequest, KHQRResponse, MerchantKHQRRequest } from './app.model';
+import {
+  CheckStatusRequest,
+  IndividualKHQRRequest,
+  KHQRResponse,
+  MerchantKHQRRequest,
+  StatusResponse,
+} from './app.model';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @Post('individual')
   @HttpCode(HttpStatus.OK)
-  generateIndividual(@Body() data: IndividualKHQRRequest): KHQRResponse {
-    return this.appService.generateIndividual(data);
+  generateIndividual(@Body() body: IndividualKHQRRequest): KHQRResponse {
+    return this.appService.generateIndividual(body);
   }
 
   @Post('merchant')
   @HttpCode(HttpStatus.OK)
-  generateMerchant(@Body() data: MerchantKHQRRequest): KHQRResponse {
-    return this.appService.generateMerchant(data);
+  generateMerchant(@Body() body: MerchantKHQRRequest): KHQRResponse {
+    return this.appService.generateMerchant(body);
+  }
+
+  @Post('status')
+  @HttpCode(HttpStatus.OK)
+  async checkTransactionStatus(
+    @Headers('authorization') authHeader: string,
+    @Body() body: CheckStatusRequest,
+  ): Promise<StatusResponse> {
+    return this.appService.checkTransactionStatus(authHeader, body);
   }
 }
