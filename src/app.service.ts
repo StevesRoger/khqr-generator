@@ -95,8 +95,11 @@ export class AppService {
       return data;
     } catch (ex) {
       this.logger.error(ex);
-      if (ex instanceof AxiosError) this.logger.error(ex.response.data);
-      throw ex;
+      if (ex instanceof AxiosError) {
+        this.logger.error(ex.response.data);
+        throw new BadRequestException(ex.response.data);
+      }
+      throw new BadRequestException(ex.message);
     }
   }
 
