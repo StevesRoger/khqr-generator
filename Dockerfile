@@ -13,9 +13,6 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Install source code
 RUN npm ci
 
-# Generate Prisma client
-RUN npm run prisma generate
-
 # Build the app
 RUN npm run build
 
@@ -37,7 +34,7 @@ WORKDIR /usr/src/app
 ENV TZ=Asia/Phnom_Penh
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 COPY package*.json ./
-COPY prisma ./prisma
+
 COPY --from=builder /usr/src/app/dist ./dist
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -47,4 +44,4 @@ RUN npm ci --omit=dev
 EXPOSE 3000
 
 # Start the app
-CMD [ "node", "./dist/src/main.js" ]
+CMD [ "node", "./dist/main.js" ]

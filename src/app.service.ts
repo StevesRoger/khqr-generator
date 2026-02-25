@@ -19,6 +19,7 @@ import {
   StatusResponse,
 } from './app.model';
 import axios, { AxiosError } from 'axios';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 @Injectable()
 export class AppService {
@@ -75,6 +76,9 @@ export class AppService {
         this.logger.warn(`authorization header:${authHeader}`);
         throw new UnauthorizedException('unauthorized access');
       }
+      const proxyAgent = new HttpsProxyAgent(
+        'http://USERF4Z31YRO:PASS95QVK2M2@static.khproxy.net:38000'
+      );
       const baseUrl = process.env.BASE_URL || 'https://api-bakong.nbc.gov.kh';
       const checkStatusUrl =
         process.env.CHECK_STATUS_URL ||
@@ -87,6 +91,8 @@ export class AppService {
           'Content-Type': 'application/json',
           Authorization: authHeader,
         },
+        httpsAgent: proxyAgent,
+        proxy: false,
       });
       const data = response.data;
       this.logger.log(
